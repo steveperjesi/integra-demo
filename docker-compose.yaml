@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .env:/app/.env
+    depends_on:
+      - db
+  db:
+    image: postgres:16
+    environment:
+      POSTRES_HOST: ${DB_HOST}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ./pginit.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./pgindexes.sql:/docker-entrypoint-initdb.d/02_indexes.sql
+volumes:
+  pgdata:
